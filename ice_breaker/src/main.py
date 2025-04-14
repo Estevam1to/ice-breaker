@@ -1,6 +1,11 @@
+from config.settings import settings
+from langchain_anthropic import ChatAnthropic
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
-from langchain_ollama import ChatOllama
+
+# from langchain_ollama import ChatOllama
+# from config.logs import logger
+from utils.likedin import scrape_linkedin_profile
 
 
 async def main():
@@ -15,23 +20,25 @@ async def main():
         input_variables=["information"], template=summary_prompt
     )
 
-    # llm = ChatAnthropic(
-    #     api_key=settings.ANTROPIC_API_KEY,
-    #     model_name="claude-3-opus-20240229",
-    #     temperature=0,
-    # )
-
-    llm = ChatOllama(
-        model="llama3",
+    llm = ChatAnthropic(
+        api_key=settings.ANTROPIC_API_KEY,
+        model_name="claude-3-opus-20240229",
         temperature=0,
     )
+
+    # llm = ChatOllama(
+    #     model="llama3",
+    #     temperature=0,
+    # )
 
     # Chain é uma classe que combina um prompt com um modelo de linguagem para gerar uma resposta.
     chain = summary_prompt_template | llm | StrOutputParser()
 
+    data = await scrape_linkedin_profile(url="https://www.linkedin.com/in/estevamluis/")
+
     output = await chain.ainvoke(
         input={
-            "information": "Eu sou uma pessoa muito criativa e gosto de pensar fora da caixa. Além disso, sou apaixonado por música e toco violão desde os 10 anos. Também sou um grande fã de esportes radicais e já pratiquei escalada em rocha."
+            "information": data,
         }
     )
 

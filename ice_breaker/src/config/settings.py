@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     )
 
     ANTROPIC_API_KEY: str
+    PROXY_CURL_API_KEY: str
+    PROXY_CURL_API_URL: str
 
 
 settings = Settings()
