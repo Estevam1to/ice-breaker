@@ -1,5 +1,5 @@
 from langchain import hub
-from langchain.agents import AgentExecutor, create_react_agent
+from langchain.agents import create_react_agent
 from langchain.prompts import PromptTemplate
 from langchain.tools import Tool
 from langchain_anthropic import ChatAnthropic
@@ -56,14 +56,7 @@ class LinkedinLookupAgent:
             prompt=react_prompt,
         )
 
-        agent_executor = AgentExecutor(
-            agent=agent,
-            tools=tools_for_agent,
-            verbose=True,
-            handle_parsing_errors=True,
-        )
-
-        result = await agent_executor.ainvoke(
+        result = await agent.ainvoke(
             input={"input": prompt_template.format_prompt(name_of_person=name)}
         )
 
